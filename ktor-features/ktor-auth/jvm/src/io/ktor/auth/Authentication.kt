@@ -5,6 +5,7 @@
 package io.ktor.auth
 
 import io.ktor.application.*
+import io.ktor.application.newapi.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
@@ -147,7 +148,8 @@ public class Authentication(config: Configuration) {
     /**
      * Installable feature for [Authentication].
      */
-    public companion object Feature : ApplicationFeature<Application, Configuration, Authentication> {
+    public companion object Feature : ApplicationFeature<Application, Configuration, Authentication>,
+        InterceptionsHolder by DefaultInterceptionsHolder("Authentication") {
         /**
          * Authenticate phase in that authentication procedures are executed.
          * Please note that referring to the phase is only possible *after* feature installation.
@@ -159,6 +161,13 @@ public class Authentication(config: Configuration) {
          * Please note that referring to the phase is only possible *after* feature installation.
          */
         public val ChallengePhase: PipelinePhase = PipelinePhase("Challenge")
+
+        init {
+            defineInterceptions {
+                call(AuthenticatePhase, ChallengePhase)
+                // TODO: maybe consider adding authentication pipeline to new API, and then add AuthenticationPipeline.RequestAuthentication
+            }
+        }
 
         override val key: AttributeKey<Authentication> = AttributeKey("Authentication")
 
@@ -343,3 +352,5 @@ public class AuthenticationRouteSelector(public val names: List<String?>) :
 public fun Application.authentication(block: Authentication.Configuration.() -> Unit) {
     featureOrNull(Authentication)?.configure(block) ?: install(Authentication, block)
 }
+
+

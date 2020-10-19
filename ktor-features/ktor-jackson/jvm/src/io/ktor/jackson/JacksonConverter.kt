@@ -8,14 +8,14 @@ import com.fasterxml.jackson.core.util.*
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.module.kotlin.*
 import io.ktor.application.*
+import io.ktor.application.newapi.*
+import io.ktor.http.content.*
 import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.request.*
 import io.ktor.util.pipeline.*
+import io.ktor.request.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
-import kotlinx.coroutines.*
 import kotlin.reflect.jvm.*
 
 /**
@@ -60,7 +60,7 @@ public class JacksonConverter(private val objectmapper: ObjectMapper = jacksonOb
         val request = context.subject
         val type = request.typeInfo
         val value = request.value as? ByteReadChannel ?: return null
-        return withContext(Dispatchers.IO) {
+        return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             val reader = value.toInputStream().reader(context.call.request.contentCharset() ?: Charsets.UTF_8)
             objectmapper.readValue(reader, type.jvmErasure.javaObjectType)
         }
@@ -70,7 +70,7 @@ public class JacksonConverter(private val objectmapper: ObjectMapper = jacksonOb
 /**
  * Register Jackson converter into [ContentNegotiation] feature
  */
-public fun ContentNegotiation.Configuration.jackson(
+public fun ContentNegotiationConfig.jackson(
     contentType: ContentType = ContentType.Application.Json,
     block: ObjectMapper.() -> Unit = {}
 ) {
