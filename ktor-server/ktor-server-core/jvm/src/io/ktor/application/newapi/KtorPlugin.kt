@@ -16,20 +16,20 @@ import kotlinx.coroutines.*
 public typealias OnCallHandler = suspend CallExecution.(ApplicationCall) -> Unit
 
 public interface OnCall {
-    public operator fun invoke(callback: suspend CallExecution.(ApplicationCall) -> Unit): Unit
-    public fun monitoring(callback: suspend CallExecution.(ApplicationCall) -> Unit): Unit
-    public fun fallback(callback: suspend CallExecution.(ApplicationCall) -> Unit): Unit
+    public operator fun invoke(block: suspend CallExecution.(ApplicationCall) -> Unit): Unit
+    public fun monitoring(block: suspend CallExecution.(ApplicationCall) -> Unit): Unit
+    public fun fallback(block: suspend CallExecution.(ApplicationCall) -> Unit): Unit
 }
 
 public interface OnReceive {
-    public operator fun invoke(callback: suspend ReceiveExecution.(ApplicationCall) -> Unit): Unit
-    public fun before(callback: suspend ReceiveExecution.(ApplicationCall) -> Unit): Unit
+    public operator fun invoke(block: suspend ReceiveExecution.(ApplicationCall) -> Unit): Unit
+    public fun before(block: suspend ReceiveExecution.(ApplicationCall) -> Unit): Unit
 }
 
 public interface OnResponse {
-    public operator fun invoke(callback: suspend ResponseExecution.(ApplicationCall) -> Unit): Unit
-    public fun before(callback: suspend ResponseExecution.(ApplicationCall) -> Unit): Unit
-    public fun after(callback: suspend ResponseExecution.(ApplicationCall) -> Unit): Unit
+    public operator fun invoke(block: suspend ResponseExecution.(ApplicationCall) -> Unit): Unit
+    public fun before(block: suspend ResponseExecution.(ApplicationCall) -> Unit): Unit
+    public fun after(block: suspend ResponseExecution.(ApplicationCall) -> Unit): Unit
 }
 
 public interface PluginContext {
@@ -260,9 +260,9 @@ public inline class Execution<SubjectT : Any>(private val context: PipelineConte
     /**
      * Sets a shutdown hook. This method is useful for closing resources allocated by the feature.
      * */
-    public fun onShutdown(callback: suspend () -> Unit) {
+    public fun onShutdown(block: suspend () -> Unit) {
         GlobalScope.launch(context.coroutineContext) {
-            callback()
+            block()
         }
     }
 }
@@ -310,12 +310,12 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
     private fun <T : Any> onDefaultPhase(
         interceptions: MutableList<Interception<T>>,
         phase: PipelinePhase,
-        callback: suspend Execution<T>.(ApplicationCall) -> Unit
+        block: suspend Execution<T>.(ApplicationCall) -> Unit
     ) {
         interceptions.add(Interception(
             phase,
             action = { pipeline ->
-                pipeline.intercept(phase) { Execution(this).callback(call) }
+                pipeline.intercept(phase) { Execution(this).block(call) }
             }
         ))
     }
@@ -329,8 +329,8 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
         /**
          * Define how processing an HTTP call should be modified by the current [KtorPlugin].
          * */
-        override operator fun invoke(callback: suspend CallExecution.(ApplicationCall) -> Unit) {
-            plugin.onDefaultPhase(plugin.callInterceptions, ApplicationCallPipeline.Features, callback)
+        override operator fun invoke(block: suspend CallExecution.(ApplicationCall) -> Unit) {
+            plugin.onDefaultPhase(plugin.callInterceptions, ApplicationCallPipeline.Features, block)
         }
 
         /**
@@ -339,8 +339,8 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
          * was performed with the call because other features can change it's content as well as add more resource usage etc.
          * while for logging and monitoring it is important to observe the pure (untouched) data.
          * */
-        override fun monitoring(callback: suspend CallExecution.(ApplicationCall) -> Unit) {
-            plugin.onDefaultPhase(plugin.monitoringInterceptions, ApplicationCallPipeline.Monitoring, callback)
+        override fun monitoring(block: suspend CallExecution.(ApplicationCall) -> Unit) {
+            plugin.onDefaultPhase(plugin.monitoringInterceptions, ApplicationCallPipeline.Monitoring, block)
         }
 
         /**
@@ -348,8 +348,8 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
          * Usually, it is handy to use fallback { call -> ...} to set the response with some message or status code,
          * or to throw an exception.
          * */
-        override fun fallback(callback: suspend CallExecution.(ApplicationCall) -> Unit) {
-            plugin.onDefaultPhase(plugin.fallbackInterceptions, ApplicationCallPipeline.Fallback, callback)
+        override fun fallback(block: suspend CallExecution.(ApplicationCall) -> Unit) {
+            plugin.onDefaultPhase(plugin.fallbackInterceptions, ApplicationCallPipeline.Fallback, block)
         }
     }
 
@@ -363,15 +363,15 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
         /**
          * Define how current [KtorPlugin] should transform data received from a client.
          * */
-        override fun invoke(callback: suspend ReceiveExecution.(ApplicationCall) -> Unit) {
-            plugin.onDefaultPhase(plugin.onReceiveInterceptions, ApplicationReceivePipeline.Transform, callback)
+        override fun invoke(block: suspend ReceiveExecution.(ApplicationCall) -> Unit) {
+            plugin.onDefaultPhase(plugin.onReceiveInterceptions, ApplicationReceivePipeline.Transform, block)
         }
 
         /**
          * Defines actions to perform before any transformations were made to the received content. It is useful for caching.
          * */
-        override fun before(callback: suspend ReceiveExecution.(ApplicationCall) -> Unit) {
-            plugin.onDefaultPhase(plugin.beforeReceiveInterceptions, ApplicationReceivePipeline.Before, callback)
+        override fun before(block: suspend ReceiveExecution.(ApplicationCall) -> Unit) {
+            plugin.onDefaultPhase(plugin.beforeReceiveInterceptions, ApplicationReceivePipeline.Before, block)
         }
     }
 
@@ -385,23 +385,23 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
          * Do transformations of the data. Example: you can write a custom serializer using this method.
          * (Note: it is handy to also use [Execution.proceedWith] for this scenario)
          * */
-        override fun invoke(callback: suspend ResponseExecution.(ApplicationCall) -> Unit) {
-            plugin.onDefaultPhase(plugin.onResponseInterceptions, ApplicationSendPipeline.Transform, callback)
+        override fun invoke(block: suspend ResponseExecution.(ApplicationCall) -> Unit) {
+            plugin.onDefaultPhase(plugin.onResponseInterceptions, ApplicationSendPipeline.Transform, block)
         }
 
         /**
          * Allows to use the direct result of call processing (see [OnCall.invoke]) and prepare data before sending a response will be executed.
          * */
-        override fun before(callback: suspend ResponseExecution.(ApplicationCall) -> Unit) {
-            plugin.onDefaultPhase(plugin.beforeResponseInterceptions, ApplicationSendPipeline.Before, callback)
+        override fun before(block: suspend ResponseExecution.(ApplicationCall) -> Unit) {
+            plugin.onDefaultPhase(plugin.beforeResponseInterceptions, ApplicationSendPipeline.Before, block)
         }
 
         /**
          * Allows to calculate some statistics on the data that was already sent to a client, or to handle errors.
          * (See [Metrics], [CachingHeaders], [StatusPages] features as examples).
          * */
-        override fun after(callback: suspend ResponseExecution.(ApplicationCall) -> Unit) {
-            plugin.onDefaultPhase(plugin.afterResponseInterceptions, ApplicationSendPipeline.After, callback)
+        override fun after(block: suspend ResponseExecution.(ApplicationCall) -> Unit) {
+            plugin.onDefaultPhase(plugin.afterResponseInterceptions, ApplicationSendPipeline.After, block)
         }
     }
 
@@ -430,7 +430,7 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
 
         private fun <T : Any> insertToPhaseRelatively(
             interceptions: MutableList<Interception<T>>,
-            callback: suspend Execution<T>.(ApplicationCall) -> Unit
+            block: suspend Execution<T>.(ApplicationCall) -> Unit
         ) {
             val currentPhase = otherPlugin.newPhase()
 
@@ -443,7 +443,7 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
                             insertPhase(pipeline, lastDependentPhase, currentPhase)
                         }
                         pipeline.intercept(currentPhase) {
-                            Execution(this).callback(call)
+                            Execution(this).block(call)
                         }
                     }
                 )
@@ -451,40 +451,40 @@ public abstract class KtorPlugin<Configuration : Any> private constructor(
         }
 
         override val onCall: OnCall = object : OnCall {
-            override operator fun invoke(callback: suspend CallExecution.(ApplicationCall) -> Unit) {
-                insertToPhaseRelatively(otherPlugin.callInterceptions, callback)
+            override operator fun invoke(block: suspend CallExecution.(ApplicationCall) -> Unit) {
+                insertToPhaseRelatively(otherPlugin.callInterceptions, block)
             }
 
-            override fun monitoring(callback: suspend CallExecution.(ApplicationCall) -> Unit) {
-                insertToPhaseRelatively(otherPlugin.monitoringInterceptions, callback)
+            override fun monitoring(block: suspend CallExecution.(ApplicationCall) -> Unit) {
+                insertToPhaseRelatively(otherPlugin.monitoringInterceptions, block)
             }
 
-            override fun fallback(callback: suspend CallExecution.(ApplicationCall) -> Unit) {
-                insertToPhaseRelatively(otherPlugin.fallbackInterceptions, callback)
+            override fun fallback(block: suspend CallExecution.(ApplicationCall) -> Unit) {
+                insertToPhaseRelatively(otherPlugin.fallbackInterceptions, block)
             }
         }
 
         override val onReceive: OnReceive = object : OnReceive {
-            override operator fun invoke(callback: suspend ReceiveExecution.(ApplicationCall) -> Unit) {
-                insertToPhaseRelatively(otherPlugin.onReceiveInterceptions, callback)
+            override operator fun invoke(block: suspend ReceiveExecution.(ApplicationCall) -> Unit) {
+                insertToPhaseRelatively(otherPlugin.onReceiveInterceptions, block)
             }
 
-            override fun before(callback: suspend ReceiveExecution.(ApplicationCall) -> Unit) {
-                insertToPhaseRelatively(otherPlugin.beforeReceiveInterceptions, callback)
+            override fun before(block: suspend ReceiveExecution.(ApplicationCall) -> Unit) {
+                insertToPhaseRelatively(otherPlugin.beforeReceiveInterceptions, block)
             }
         }
 
         override val onResponse: OnResponse = object : OnResponse {
-            override operator fun invoke(callback: suspend ResponseExecution.(ApplicationCall) -> Unit) {
-                insertToPhaseRelatively(otherPlugin.onResponseInterceptions, callback)
+            override operator fun invoke(block: suspend ResponseExecution.(ApplicationCall) -> Unit) {
+                insertToPhaseRelatively(otherPlugin.onResponseInterceptions, block)
             }
 
-            override fun before(callback: suspend ResponseExecution.(ApplicationCall) -> Unit) {
-                insertToPhaseRelatively(otherPlugin.beforeResponseInterceptions, callback)
+            override fun before(block: suspend ResponseExecution.(ApplicationCall) -> Unit) {
+                insertToPhaseRelatively(otherPlugin.beforeResponseInterceptions, block)
             }
 
-            override fun after(callback: suspend ResponseExecution.(ApplicationCall) -> Unit) {
-                insertToPhaseRelatively(otherPlugin.afterResponseInterceptions, callback)
+            override fun after(block: suspend ResponseExecution.(ApplicationCall) -> Unit) {
+                insertToPhaseRelatively(otherPlugin.afterResponseInterceptions, block)
             }
         }
     }
