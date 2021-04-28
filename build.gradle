@@ -257,21 +257,6 @@ if (build_snapshot_train) {
     }
 }
 
-afterEvaluate {
-    def allCompileKotlinTasks = subprojects.collect {
-        it.hasProperty("compileKotlinJvm") ? [it.compileKotlinJvm] : []
-    }.flatten()
-
-    task dokkaWebsite(type: dokka.getClass()) {
-        outputFormat = 'kotlin-website'
-        outputDirectory = "${rootProject.projectDir}/apidoc"
-
-        kotlinTasks { allCompileKotlinTasks }
-
-        reportUndocumented = false
-    }
-}
-
 if (project.hasProperty("enable-coverage")) {
     apply from: "gradle/jacoco.gradle"
 }
@@ -284,5 +269,14 @@ if (jvm_ir_enabled) {
                 enabled = enabled && jvm_ir_api_check_enabled
             }
         }
+    }
+}
+
+tasks {
+    dokkaHtmlMultiModule {
+        def path = rootProject.file("build/docs")
+        pluginsMapConfiguration.set([
+            "org.jetbrains.dokka.versioning.VersioningPlugin": "{ 'version': '1.5.4', 'olderVersionsDir': '$path' }"
+        ])
     }
 }
