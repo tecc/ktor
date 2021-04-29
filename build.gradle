@@ -187,7 +187,7 @@ allprojects {
     }
 
     if (!rootProject.ext.skipPublish.contains(project.name)) {
-        apply from: rootProject.file('gradle/dokka.gradle')
+        apply plugin: "org.jetbrains.dokka"
         apply from: rootProject.file('gradle/publish.gradle')
     }
 }
@@ -272,11 +272,9 @@ if (jvm_ir_enabled) {
     }
 }
 
-tasks {
-    dokkaHtmlMultiModule {
-        def path = rootProject.file("build/docs")
-        pluginsMapConfiguration.set([
-            "org.jetbrains.dokka.versioning.VersioningPlugin": "{ 'version': '1.5.4', 'olderVersionsDir': '$path' }"
-        ])
-    }
+dokkaHtmlMultiModule {
+    def path = rootProject.file("build/docs")
+    pluginsMapConfiguration.set([
+        "org.jetbrains.dokka.versioning.VersioningPlugin": """{ "version": "1.5.4", "olderVersionsDir": "$path" }"""
+    ])
 }
