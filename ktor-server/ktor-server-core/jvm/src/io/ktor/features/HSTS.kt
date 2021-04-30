@@ -93,7 +93,8 @@ public class HSTS(config: Configuration) {
     /**
      * Feature installation object
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, HSTS>,
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, HSTS>,
         InterceptionsHolder by DefaultInterceptionsHolder("HSTS") {
         public const val DEFAULT_HSTS_MAX_AGE: Long = 365L * 24 * 3600 // 365 days
 

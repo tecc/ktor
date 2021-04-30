@@ -181,7 +181,8 @@ public class CallId private constructor(
     /**
      * Installable feature for [CallId]
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, CallId>,
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, CallId>,
         InterceptionsHolder by DefaultInterceptionsHolder("CallId") {
         /**
          * [ApplicationCallPipeline]'s phase which this feature will be installed to
@@ -193,7 +194,7 @@ public class CallId private constructor(
                 monitoring(phase)
             }
         }
-        
+
         internal val callIdKey = AttributeKey<String>("ExtractedCallId")
 
         override val key: AttributeKey<CallId> = AttributeKey("CallId")

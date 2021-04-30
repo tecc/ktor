@@ -112,10 +112,6 @@ private inline fun <F, T> Iterable<F>.mapFirstNotNull(block: (F) -> T?): T? {
     return null
 }
 
-
-/// __________________________________________________________________________________________
-
-
 /**
  * Configuration type for [ContentNegotiation] feature
  */
@@ -170,7 +166,6 @@ public class ContentNegotiationConfig(public val pipeline: ApplicationCallPipeli
     public fun accept(contributor: AcceptHeaderContributor) {
         acceptContributors.add(contributor)
     }
-
 
     /**
      * Specifies which [converter] to use for a particular [contentType]

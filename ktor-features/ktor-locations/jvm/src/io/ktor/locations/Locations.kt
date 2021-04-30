@@ -118,7 +118,8 @@ public open class Locations @KtorExperimentalLocationsAPI constructor(
     /**
      * Installable feature for [Locations].
      */
-    public companion object Feature : ApplicationFeature<Application, Configuration, Locations> {
+    public companion object Feature :
+        ApplicationFeature<Application, Configuration, Locations> {
         override val key: AttributeKey<Locations> = AttributeKey("Locations")
 
         @OptIn(KtorExperimentalLocationsAPI::class)

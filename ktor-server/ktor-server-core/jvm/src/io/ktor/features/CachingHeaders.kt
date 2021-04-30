@@ -6,14 +6,12 @@ package io.ktor.features
 
 import io.ktor.application.*
 import io.ktor.application.newapi.*
-import io.ktor.http.content.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.response.*
 import io.ktor.util.*
-import io.ktor.application.newapi.KtorPlugin.Companion.createPlugin as makePlugin
 import io.ktor.util.pipeline.*
-
+import io.ktor.application.newapi.KtorPlugin.Companion.createPlugin as makePlugin
 
 /**
  * Configuration for [CachingHeaders] feature

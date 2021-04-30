@@ -14,7 +14,6 @@ import io.ktor.util.date.*
 import kotlinx.atomicfu.*
 import java.util.*
 
-
 /**
  * Configuration for [DefaultHeaders] feature.
  */
@@ -35,12 +34,10 @@ public class DefaultHeadersConfig(public val pipeline: ApplicationCallPipeline) 
     @InternalAPI
     public var clock: () -> Long = { System.currentTimeMillis() }
 
-
     private val headersBuilt = headers.build()
 
     private var cachedDateTimeStamp: Long = 0L
     private val cachedDateText = atomic("")
-
 
     internal fun intercept(call: ApplicationCall) {
         appendDateHeader(call)
@@ -91,7 +88,6 @@ public val DefaultHeaders: KtorPlugin<DefaultHeadersConfig> = createPlugin("Defa
             "$applicationPackageName/$applicationPackageVersion $ktorPackageName/$ktorPackageVersion"
         )
     }
-
 
     onCall { call ->
         plugin.intercept(call)

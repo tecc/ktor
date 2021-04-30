@@ -102,7 +102,8 @@ public class Webjars internal constructor(private val webjarsPrefix: String) {
     /**
      * Feature installation companion.
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, Webjars> {
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, Webjars> {
 
         override val key: AttributeKey<Webjars> = AttributeKey("Webjars")
 

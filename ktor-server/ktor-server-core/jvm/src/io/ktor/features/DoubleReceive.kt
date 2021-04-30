@@ -44,7 +44,8 @@ public class DoubleReceive internal constructor(private val config: Configuratio
     /**
      * [DoubleReceive] feature's installation object.
      */
-    public companion object Feature : ApplicationFeature<Application, Configuration, DoubleReceive>,
+    public companion object Feature :
+        ApplicationFeature<Application, Configuration, DoubleReceive>,
         InterceptionsHolder by DefaultInterceptionsHolder("DoubleReceive") {
         override val key: AttributeKey<DoubleReceive> = AttributeKey("DoubleReceive")
 

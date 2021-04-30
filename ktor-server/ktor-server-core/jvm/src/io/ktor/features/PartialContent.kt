@@ -6,7 +6,6 @@ package io.ktor.features
 
 import io.ktor.application.*
 import io.ktor.application.newapi.*
-import io.ktor.http.content.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.request.*
@@ -44,7 +43,8 @@ public class PartialContent(private val maxRangeCount: Int) {
     /**
      * `ApplicationFeature` implementation for [PartialContent]
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, PartialContent>,
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, PartialContent>,
         InterceptionsHolder by DefaultInterceptionsHolder("PartialContent") {
         private val PartialContentPhase = PipelinePhase("PartialContent")
 

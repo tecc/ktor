@@ -148,7 +148,8 @@ public class Authentication(config: Configuration) {
     /**
      * Installable feature for [Authentication].
      */
-    public companion object Feature : ApplicationFeature<Application, Configuration, Authentication>,
+    public companion object Feature :
+        ApplicationFeature<Application, Configuration, Authentication>,
         InterceptionsHolder by DefaultInterceptionsHolder("Authentication") {
         /**
          * Authenticate phase in that authentication procedures are executed.
@@ -352,5 +353,3 @@ public class AuthenticationRouteSelector(public val names: List<String?>) :
 public fun Application.authentication(block: Authentication.Configuration.() -> Unit) {
     featureOrNull(Authentication)?.configure(block) ?: install(Authentication, block)
 }
-
-

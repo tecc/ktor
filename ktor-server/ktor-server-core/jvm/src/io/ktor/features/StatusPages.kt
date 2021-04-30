@@ -128,7 +128,8 @@ public class StatusPages(config: Configuration) {
     /**
      * Feature installation object
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, StatusPages>,
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, StatusPages>,
         InterceptionsHolder by DefaultInterceptionsHolder("StatusPages") {
         override val key: AttributeKey<StatusPages> = AttributeKey("Status Pages")
 

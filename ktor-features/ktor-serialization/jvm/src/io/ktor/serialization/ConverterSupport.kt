@@ -13,7 +13,7 @@ import kotlinx.serialization.*
  * with the specified [contentType] and binary [format] (such as CBOR, ProtoBuf)
  */
 @OptIn(ExperimentalSerializationApi::class)
-public fun  ContentNegotiationConfig.serialization(
+public fun ContentNegotiationConfig.serialization(
     contentType: ContentType,
     format: BinaryFormat
 ) {

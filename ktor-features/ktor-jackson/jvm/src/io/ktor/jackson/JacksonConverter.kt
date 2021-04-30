@@ -9,30 +9,15 @@ import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.module.kotlin.*
 import io.ktor.application.*
 import io.ktor.application.newapi.*
-import io.ktor.http.content.*
 import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.util.pipeline.*
+import io.ktor.http.content.*
 import io.ktor.request.*
+import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlin.reflect.jvm.*
 
-/**
- *    install(ContentNegotiation) {
- *       register(ContentType.Application.Json, JacksonConverter())
- *    }
- *
- *    to be able to modify the objectMapper (eg. using specific modules and/or serializers and/or
- *    configuration options, you could use the following (as seen in the ktor-samples):
- *
- *    install(ContentNegotiation) {
- *        jackson {
- *            configure(SerializationFeature.INDENT_OUTPUT, true)
- *            registerModule(JavaTimeModule())
- +        }
- *    }
- */
 public class JacksonConverter(private val objectmapper: ObjectMapper = jacksonObjectMapper()) : ContentConverter {
     override suspend fun convertForSend(
         context: PipelineContext<Any, ApplicationCall>,
@@ -56,7 +41,7 @@ public class JacksonConverter(private val objectmapper: ObjectMapper = jacksonOb
         )
     }
 
-    override suspend fun convertForReceive(context: PipelineContext<ApplicationReceiveRequest, ApplicationCall>): Any? {
+    override suspend fun convertForReceive(context: ReceiveExecution): Any? {
         val request = context.subject
         val type = request.typeInfo
         val value = request.value as? ByteReadChannel ?: return null

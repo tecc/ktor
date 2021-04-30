@@ -41,7 +41,8 @@ public class Thymeleaf(private val engine: TemplateEngine) {
     /**
      * A feature installing companion object
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, TemplateEngine, Thymeleaf> {
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, TemplateEngine, Thymeleaf> {
         override val key: AttributeKey<Thymeleaf> = AttributeKey<Thymeleaf>("thymeleaf")
 
         override fun install(pipeline: ApplicationCallPipeline, configure: TemplateEngine.() -> Unit): Thymeleaf {

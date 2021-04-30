@@ -51,7 +51,8 @@ public class DropwizardMetrics(
     /**
      * Metrics feature companion
      */
-    public companion object Feature : ApplicationFeature<Application, Configuration, DropwizardMetrics> {
+    public companion object Feature :
+        ApplicationFeature<Application, Configuration, DropwizardMetrics> {
         override val key: AttributeKey<DropwizardMetrics> = AttributeKey("metrics")
 
         private class RoutingMetrics(val name: String, val context: Timer.Context)

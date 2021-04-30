@@ -246,7 +246,6 @@ public class CorsConfig {
         }
     }
 
-
     private val numberRegex = "[0-9]+".toRegex()
 
     /**
@@ -271,7 +270,6 @@ public class CorsConfig {
      * Set of all allowed headers
      */
     public val allHeadersSet: Set<String> = allHeaders.map { it.toLowerCasePreservingASCIIRules() }.toSet()
-
 
     private val headersList =
         headers.filterNot { it in CorsSimpleRequestHeaders }

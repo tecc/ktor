@@ -50,7 +50,8 @@ public class Sessions(public val providers: List<SessionProvider<*>>) {
     /**
      * Feature installation object
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Sessions.Configuration, Sessions> {
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Sessions.Configuration, Sessions> {
         override val key: AttributeKey<Sessions> = AttributeKey<Sessions>("Sessions")
         override fun install(pipeline: ApplicationCallPipeline, configure: Configuration.() -> Unit): Sessions {
             val configuration = Configuration().apply(configure)

@@ -112,7 +112,8 @@ public class CallLogging private constructor(
     /**
      * Installable feature for [CallLogging].
      */
-    public companion object Feature : ApplicationFeature<Application, Configuration, CallLogging>,
+    public companion object Feature :
+        ApplicationFeature<Application, Configuration, CallLogging>,
         InterceptionsHolder by DefaultInterceptionsHolder("CallLogging") {
         override val key: AttributeKey<CallLogging> = AttributeKey("Call Logging")
         private val loggingPhase = PipelinePhase("Logging")
@@ -122,7 +123,6 @@ public class CallLogging private constructor(
                 monitoring(loggingPhase)
             }
         }
-
 
         override fun install(pipeline: Application, configure: Configuration.() -> Unit): CallLogging {
             val configuration = Configuration().apply(configure)

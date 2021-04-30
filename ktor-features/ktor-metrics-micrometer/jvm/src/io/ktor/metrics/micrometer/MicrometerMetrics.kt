@@ -169,7 +169,8 @@ public class MicrometerMetrics private constructor(
     /**
      * Micrometer feature installation object
      */
-    public companion object Feature : ApplicationFeature<Application, Configuration, MicrometerMetrics> {
+    public companion object Feature :
+        ApplicationFeature<Application, Configuration, MicrometerMetrics> {
         private const val defaultBaseName: String = "ktor.http.server"
 
         private lateinit var baseName: String

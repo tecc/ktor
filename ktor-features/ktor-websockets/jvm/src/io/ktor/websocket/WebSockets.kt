@@ -122,7 +122,8 @@ public class WebSockets @ExperimentalWebSocketExtensionApi constructor(
     /**
      * Feature installation object.
      */
-    public companion object Feature : ApplicationFeature<Application, WebSocketOptions, WebSockets> {
+    public companion object Feature :
+        ApplicationFeature<Application, WebSocketOptions, WebSockets> {
         override val key: AttributeKey<WebSockets> = AttributeKey("WebSockets")
 
         /**

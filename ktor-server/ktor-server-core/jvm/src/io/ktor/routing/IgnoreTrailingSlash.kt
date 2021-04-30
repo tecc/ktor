@@ -27,7 +27,8 @@ public class IgnoreTrailingSlash private constructor() {
      */
     public class Configuration
 
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, IgnoreTrailingSlash> {
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, IgnoreTrailingSlash> {
         override val key: AttributeKey<IgnoreTrailingSlash> = AttributeKey("IgnoreTrailingSlash")
 
         override fun install(

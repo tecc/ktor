@@ -35,7 +35,8 @@ public class FreeMarker(private val config: Configuration) {
     /**
      * A feature installing companion object
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, FreeMarker> {
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, FreeMarker> {
         override val key: AttributeKey<FreeMarker> = AttributeKey("freemarker")
 
         override fun install(pipeline: ApplicationCallPipeline, configure: Configuration.() -> Unit): FreeMarker {

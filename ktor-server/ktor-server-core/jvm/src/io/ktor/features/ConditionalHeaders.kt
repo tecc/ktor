@@ -80,7 +80,8 @@ public class ConditionalHeaders(private val versionProviders: List<suspend (Outg
     /**
      * `ApplicationFeature` implementation for [ConditionalHeaders]
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, ConditionalHeaders>,
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, ConditionalHeaders>,
         InterceptionsHolder by DefaultInterceptionsHolder("ConditionalHeaders") {
         override val key: AttributeKey<ConditionalHeaders> = AttributeKey<ConditionalHeaders>("Conditional Headers")
 

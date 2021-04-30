@@ -37,7 +37,8 @@ public class PebbleContent(
  */
 public class Pebble(private val engine: PebbleEngine) {
 
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, PebbleEngine.Builder, Pebble> {
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, PebbleEngine.Builder, Pebble> {
         override val key: AttributeKey<Pebble> = AttributeKey<Pebble>("pebble")
 
         override fun install(pipeline: ApplicationCallPipeline, configure: PebbleEngine.Builder.() -> Unit): Pebble {

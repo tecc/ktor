@@ -90,7 +90,8 @@ public class Routing(
      * Installable feature for [Routing]
      */
     @Suppress("PublicApiImplicitType")
-    public companion object Feature : ApplicationFeature<Application, Routing, Routing> {
+    public companion object Feature :
+        ApplicationFeature<Application, Routing, Routing> {
 
         /**
          * Event definition for when a routing-based call processing starts
@@ -119,9 +120,11 @@ public class Routing(
  */
 public val Route.application: Application
     get() = when {
-        this is Routing -> application
-        else -> parent?.application
-            ?: throw UnsupportedOperationException("Cannot retrieve application from unattached routing entry")
+        this is Routing ->
+            application
+        else ->
+            parent?.application
+                ?: throw UnsupportedOperationException("Cannot retrieve application from unattached routing entry")
     }
 
 /**

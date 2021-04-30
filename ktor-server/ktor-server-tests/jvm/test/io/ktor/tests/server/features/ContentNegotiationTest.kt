@@ -359,18 +359,29 @@ class ContentNegotiationTest {
         handleRequest(HttpMethod.Post, "/parameters") {
             setBody("k=v")
             addHeader(
-                HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString()
+                HttpHeaders.ContentType,
+                ContentType.Application.FormUrlEncoded.toString()
             )
         }.let { call ->
             assertEquals("Parameters [k=[v]]", call.response.content)
         }
 
         handleRequest(HttpMethod.Post, "/multipart") {
-            setBody("my-boundary", listOf(PartData.FormItem("test", {}, headersOf(
-                HttpHeaders.ContentDisposition, ContentDisposition("form-data", listOf(
-                    HeaderValueParam("name", "field1")
-                )).toString()
-            ))))
+            setBody(
+                "my-boundary", listOf(
+                    PartData.FormItem(
+                        "test",
+                        {},
+                        headersOf(
+                            HttpHeaders.ContentDisposition,
+                            ContentDisposition(
+                                "form-data",
+                                listOf(HeaderValueParam("name", "field1"))
+                            ).toString()
+                        )
+                    )
+                )
+            )
             addHeader(
                 HttpHeaders.ContentType,
                 ContentType.MultiPart.FormData.withParameter("boundary", "my-boundary").toString()

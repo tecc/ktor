@@ -52,7 +52,8 @@ public class ShutDownUrl(public val url: String, public val exitCode: Applicatio
     /**
      * A feature to install into engine pipeline
      */
-    public object EngineFeature : ApplicationFeature<EnginePipeline, Configuration, ShutDownUrl> {
+    public object EngineFeature :
+        ApplicationFeature<EnginePipeline, Configuration, ShutDownUrl> {
         override val key: AttributeKey<ShutDownUrl> = AttributeKey<ShutDownUrl>("shutdown.url")
 
         override fun install(pipeline: EnginePipeline, configure: Configuration.() -> Unit): ShutDownUrl {
@@ -73,7 +74,8 @@ public class ShutDownUrl(public val url: String, public val exitCode: Applicatio
     /**
      * A feature to install into application call pipeline
      */
-    public object ApplicationCallFeature : ApplicationFeature<ApplicationCallPipeline, Configuration, ShutDownUrl> {
+    public object ApplicationCallFeature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, ShutDownUrl> {
         override val key: AttributeKey<ShutDownUrl> = AttributeKey<ShutDownUrl>("shutdown.url")
 
         override fun install(pipeline: ApplicationCallPipeline, configure: Configuration.() -> Unit): ShutDownUrl {

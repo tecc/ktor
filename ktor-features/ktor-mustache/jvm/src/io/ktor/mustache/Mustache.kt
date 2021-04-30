@@ -39,7 +39,8 @@ public class Mustache(configuration: Configuration) {
         public var mustacheFactory: MustacheFactory = DefaultMustacheFactory()
     }
 
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, Mustache> {
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, Mustache> {
         override val key: AttributeKey<Mustache> = AttributeKey<Mustache>("mustache")
 
         override fun install(pipeline: ApplicationCallPipeline, configure: Configuration.() -> Unit): Mustache {

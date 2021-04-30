@@ -60,7 +60,8 @@ public class Velocity(private val engine: VelocityEngine) {
     /**
      * A companion object for installing feature
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, VelocityEngine, Velocity> {
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, VelocityEngine, Velocity> {
         override val key: AttributeKey<Velocity> = AttributeKey<Velocity>("velocity")
 
         override fun install(pipeline: ApplicationCallPipeline, configure: VelocityEngine.() -> Unit): Velocity {

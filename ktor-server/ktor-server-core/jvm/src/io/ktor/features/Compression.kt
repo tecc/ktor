@@ -176,7 +176,8 @@ public class Compression(compression: Configuration) {
     /**
      * `ApplicationFeature` implementation for [Compression]
      */
-    public companion object Feature : ApplicationFeature<ApplicationCallPipeline, Configuration, Compression>,
+    public companion object Feature :
+        ApplicationFeature<ApplicationCallPipeline, Configuration, Compression>,
         InterceptionsHolder by DefaultInterceptionsHolder("Compression") {
         /**
          * Attribute that could be added to an application call to prevent it's response from being compressed
