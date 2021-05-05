@@ -7,6 +7,8 @@ package io.ktor.utils.io.internal
 import io.ktor.utils.io.*
 import kotlinx.atomicfu.*
 import kotlinx.coroutines.*
+import kotlin.coroutines.*
+import kotlin.coroutines.intrinsics.*
 
 /**
  * Exclusive slot for waiting.
@@ -15,7 +17,7 @@ import kotlinx.coroutines.*
  * TODO: replace [Job] -> [Continuation] when all coroutines problems are fixed.
  */
 internal class AwaitingSlot {
-    private val suspension: AtomicRef<CompletableJob?> = atomic(null)
+    private val suspension: AtomicRef<Continuation<Unit>?> = atomic(null)
 
     init {
         makeShared()
@@ -36,7 +38,7 @@ internal class AwaitingSlot {
      * Resume waiter.
      */
     public fun resume() {
-        suspension.getAndSet(null)?.complete()
+        suspension.getAndSet(null)?.resume(Unit)
     }
 
     /**
@@ -46,19 +48,23 @@ internal class AwaitingSlot {
         val continuation = suspension.getAndSet(null) ?: return
 
         if (cause != null) {
-            continuation.completeExceptionally(cause)
+            continuation.resumeWithException(cause)
         } else {
-            continuation.complete()
+            continuation.resume(Unit)
         }
     }
 
     private suspend fun trySuspend(): Boolean {
         var suspended = false
 
-        val job = Job()
-        if (suspension.compareAndSet(null, job)) {
-            suspended = true
-            job.join()
+        suspendCoroutineUninterceptedOrReturn<Unit> {
+            if (suspension.compareAndSet(null, it)) {
+                suspended = true
+
+                return@suspendCoroutineUninterceptedOrReturn COROUTINE_SUSPENDED
+            }
+
+            Unit
         }
 
         return suspended
