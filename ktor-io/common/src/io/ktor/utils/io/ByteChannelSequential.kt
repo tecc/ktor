@@ -474,29 +474,34 @@ public abstract class ByteChannelSequentialBase(
         return builder.build()
     }
 
-    protected fun readAvailableClosed(): Int {
+    private fun readAvailableClosed(): Int {
         closedCause?.let { throw it }
+
+        if (availableForRead > 0) {
+            prepareFlushedBytes()
+        }
+
         return -1
     }
 
-    override suspend fun readAvailable(dst: ChunkBuffer): Int = readAvailable(dst as Buffer)
+    override suspend fun readAvailable(dst: ChunkBuffer): Int {
+        closedCause?.let { throw it }
+        if (closed && availableForRead == 0) return -1
 
-    internal suspend fun readAvailable(dst: Buffer): Int = when {
-        closedCause != null -> throw closedCause!!
-        readable.canRead() -> {
-            val size = minOf(dst.writeRemaining.toLong(), readable.remaining).toInt()
-            readable.readFully(dst, size)
-            afterRead(size)
-            size
+        if (dst.writeRemaining == 0) return 0
+
+        if (availableForRead == 0) {
+            awaitSuspend(1)
         }
-        closed -> readAvailableClosed()
-        !dst.canWrite() -> 0
-        else -> readAvailableSuspend(dst)
-    }
 
-    private suspend fun readAvailableSuspend(dst: Buffer): Int {
-        awaitSuspend(1)
-        return readAvailable(dst)
+        if (!readable.canRead()) {
+            prepareFlushedBytes()
+        }
+
+        val size = minOf(dst.writeRemaining.toLong(), readable.remaining).toInt()
+        readable.readFully(dst, size)
+        afterRead(size)
+        return size
     }
 
     override suspend fun readFully(dst: ChunkBuffer, n: Int) {
@@ -522,20 +527,24 @@ public abstract class ByteChannelSequentialBase(
         return readFully(dst, n)
     }
 
-    override suspend fun readAvailable(dst: ByteArray, offset: Int, length: Int): Int = when {
-        readable.canRead() -> {
-            val size = minOf(length.toLong(), readable.remaining).toInt()
-            readable.readFully(dst, offset, size)
-            afterRead(size)
-            size
-        }
-        closed -> readAvailableClosed()
-        else -> readAvailableSuspend(dst, offset, length)
-    }
+    override suspend fun readAvailable(dst: ByteArray, offset: Int, length: Int): Int {
+        closedCause?.let { throw it }
+        if (closed && availableForRead == 0) return -1
 
-    private suspend fun readAvailableSuspend(dst: ByteArray, offset: Int, length: Int): Int {
-        awaitSuspend(1)
-        return readAvailable(dst, offset, length)
+        if (length == 0) return 0
+
+        if (availableForRead == 0) {
+            awaitSuspend(1)
+        }
+
+        if (!readable.canRead()) {
+            prepareFlushedBytes()
+        }
+
+        val size = minOf(length.toLong(), readable.remaining).toInt()
+        readable.readFully(dst, offset, size)
+        afterRead(size)
+        return size
     }
 
     override suspend fun readFully(dst: ByteArray, offset: Int, length: Int) {
@@ -720,6 +729,7 @@ public abstract class ByteChannelSequentialBase(
 
             return false
         }
+
         @OptIn(DangerousInternalIoApi::class)
         return decodeUTF8LineLoopSuspend(out, limit) { size ->
             afterRead(size)

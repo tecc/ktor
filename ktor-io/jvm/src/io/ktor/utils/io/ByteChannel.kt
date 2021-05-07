@@ -1,6 +1,7 @@
 package io.ktor.utils.io
 
 import io.ktor.utils.io.core.*
+import io.ktor.utils.io.core.internal.*
 import java.nio.*
 
 /**
@@ -11,7 +12,9 @@ public fun ByteReadChannel(content: ByteBuffer): ByteReadChannel = ByteBufferCha
 /**
  * Creates buffered channel for asynchronous reading and writing of sequences of bytes.
  */
-public actual fun ByteChannel(autoFlush: Boolean): ByteChannel = ByteBufferChannel(autoFlush = autoFlush)
+public actual fun ByteChannel(autoFlush: Boolean): ByteChannel = ByteChannelSequentialJVM(
+    ChunkBuffer.Empty, autoFlush = autoFlush
+)
 
 /**
  * Creates channel for reading from the specified byte array.

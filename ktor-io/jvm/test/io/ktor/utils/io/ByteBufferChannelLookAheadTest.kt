@@ -1,6 +1,7 @@
 package kotlinx.coroutines.experimental.io
 
 import io.ktor.utils.io.*
+import io.ktor.utils.io.core.internal.*
 import io.ktor.utils.io.core.writeInt
 import kotlin.test.*
 
@@ -50,7 +51,8 @@ class ByteBufferChannelLookAheadTest : ByteChannelTestBase() {
     fun testReadDuringWriting() = runTest {
         ch.writeSuspendSession {
             ch.lookAheadSuspend {
-                this@writeSuspendSession.request(1)!!.writeInt(777)
+                val request: ChunkBuffer? = this@writeSuspendSession.request(1)
+                request!!.writeInt(777)
                 written(4)
                 flush()
 
