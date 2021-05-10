@@ -57,7 +57,7 @@ public fun URLBuilder.takeFrom(url: URLBuilder): URLBuilder {
 public fun URLBuilder.takeFrom(url: Url): URLBuilder {
     protocol = url.protocol
     host = url.host
-    port = url.port
+    port = url.specifiedPort
     encodedPath = url.encodedPath
     encodedUser = url.encodedUser
     encodedPassword = url.encodedPassword
