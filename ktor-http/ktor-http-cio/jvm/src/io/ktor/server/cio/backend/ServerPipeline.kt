@@ -42,6 +42,7 @@ public fun CoroutineScope.startServerConnectionPipeline(
             pipelineWriterLoop(channel, timeout, connection)
         } catch (t: Throwable) {
             connection.output.close(t)
+            connection.input.cancel(t)
         } finally {
             connection.output.close()
         }

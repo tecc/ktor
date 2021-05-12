@@ -47,6 +47,10 @@ internal suspend fun ByteChannelSequentialBase.copyToSequentialImpl(dst: ByteCha
         remainingLimit -= copied
     }
 
+    if (autoFlush) {
+        flush()
+    }
+
     return limit - remainingLimit
 }
 

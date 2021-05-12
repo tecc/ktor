@@ -63,8 +63,8 @@ class DeflaterReadChannelTest : CoroutineScope {
         assertEquals(text, asyncOf(text).toInputStream().reader().readText())
 
         for (step in 1..text.length) {
-            testReadChannel(text, asyncOf(text))
-            testWriteChannel(text, asyncOf(text))
+            testReadChannel(text.take(step), asyncOf(text.take(step)))
+            testWriteChannel(text.take(step), asyncOf(text.take(step)))
         }
     }
 
