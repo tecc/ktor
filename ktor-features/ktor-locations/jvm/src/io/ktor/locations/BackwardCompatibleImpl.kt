@@ -24,6 +24,7 @@ internal abstract class LocationsImpl(
 ) {
     protected val info: MutableMap<KClass<*>, LocationInfo> = HashMap()
 
+    @Suppress("DEPRECATION_ERROR")
     protected val conversionService: ConversionService
         get() = application.conversionService
 

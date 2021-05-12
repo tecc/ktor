@@ -237,7 +237,7 @@ public data class PathSegmentConstantRouteSelector(
 
     @Deprecated(
         "hasTrailingSlash is not used anymore. This is going to be removed",
-        level = DeprecationLevel.WARNING,
+        level = DeprecationLevel.ERROR,
         replaceWith = ReplaceWith("PathSegmentConstantRouteSelector(value)")
     )
     public constructor(value: String, hasTrailingSlash: Boolean) : this(value)
@@ -283,7 +283,7 @@ public data class PathSegmentParameterRouteSelector(
 
     @Deprecated(
         "hasTrailingSlash is not used anymore. This is going to be removed",
-        level = DeprecationLevel.WARNING,
+        level = DeprecationLevel.ERROR,
         replaceWith = ReplaceWith("PathSegmentParameterRouteSelector(value, prefix, suffix)")
     )
     public constructor(name: String, prefix: String? = null, suffix: String? = null, hasTrailingSlash: Boolean) :
@@ -317,7 +317,7 @@ public data class PathSegmentOptionalParameterRouteSelector(
 
     @Deprecated(
         "hasTrailingSlash is not used anymore. This is going to be removed",
-        level = DeprecationLevel.WARNING,
+        level = DeprecationLevel.ERROR,
         replaceWith = ReplaceWith("PathSegmentOptionalParameterRouteSelector(value, prefix, suffix)")
     )
     public constructor(name: String, prefix: String? = null, suffix: String? = null, hasTrailingSlash: Boolean) :
@@ -363,7 +363,7 @@ public data class PathSegmentTailcardRouteSelector(
 
     @Deprecated(
         "hasTrailingSlash is not used anymore. This is going to be removed",
-        level = DeprecationLevel.WARNING,
+        level = DeprecationLevel.ERROR,
         replaceWith = ReplaceWith("PathSegmentTailcardRouteSelector(name, prefix)")
     )
     public constructor(name: String = "", prefix: String = "", hasTrailingSlash: Boolean) : this(name, prefix)

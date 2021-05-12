@@ -43,22 +43,9 @@ public fun String.parseUrlEncodedParameters(defaultEncoding: Charset = Charsets.
 /**
  * Encode form parameters from a list of pairs
  */
-@Deprecated("Binary compatibility", level = DeprecationLevel.HIDDEN)
-public fun List<Pair<String, String?>>.formUrlEncode(): String = formUrlEncode(UrlEncodingOption.DEFAULT)
-
-/**
- * Encode form parameters from a list of pairs
- */
 @KtorExperimentalAPI
 public fun List<Pair<String, String?>>.formUrlEncode(option: UrlEncodingOption = UrlEncodingOption.DEFAULT): String =
     buildString { formUrlEncodeTo(this, option) }
-
-/**
- * Encode form parameters from a list of pairs to the specified [out] appendable
- */
-@Deprecated("Binary compatibility", level = DeprecationLevel.HIDDEN)
-public fun List<Pair<String, String?>>.formUrlEncodeTo(out: Appendable): Unit =
-    formUrlEncodeTo(out, UrlEncodingOption.DEFAULT)
 
 /**
  * Encode form parameters from a list of pairs to the specified [out] appendable by using [option]
@@ -97,10 +84,6 @@ public fun Parameters.formUrlEncodeTo(out: Appendable) {
 internal fun ParametersBuilder.formUrlEncodeTo(out: Appendable) {
     entries().formUrlEncodeTo(out, urlEncodingOption)
 }
-
-@Deprecated("Binary compatibility", level = DeprecationLevel.HIDDEN)
-internal fun Set<Map.Entry<String, List<String>>>.formUrlEncodeTo(out: Appendable) =
-    formUrlEncodeTo(out, UrlEncodingOption.DEFAULT)
 
 @KtorExperimentalAPI
 internal fun Set<Map.Entry<String, List<String>>>.formUrlEncodeTo(

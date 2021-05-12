@@ -7,7 +7,6 @@ package io.ktor.tests.auth
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.client.*
-import io.ktor.client.engine.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -22,7 +21,6 @@ import io.ktor.util.*
 import kotlinx.coroutines.*
 import org.json.simple.*
 import java.net.*
-import java.util.*
 import java.util.concurrent.*
 import kotlin.test.*
 
@@ -328,6 +326,7 @@ class OAuth2Test {
         withTestApplication {
             application.routing {
                 get("/login") {
+                    @Suppress("DEPRECATION_ERROR")
                     oauthRespondRedirect(testClient, dispatcher, DefaultSettings, "http://localhost/login")
                 }
             }
@@ -347,6 +346,7 @@ class OAuth2Test {
             assertEquals("clientId1", redirectParameters[OAuth2RequestParameters.ClientId])
             assertEquals("code", redirectParameters[OAuth2RequestParameters.ResponseType])
             assertNotNull(redirectParameters[OAuth2RequestParameters.State])
+            @Suppress("DEPRECATION_ERROR")
             assertEquals("http://localhost/login", redirectParameters[OAuth2RequestParameters.RedirectUri])
         }
     }
@@ -356,6 +356,7 @@ class OAuth2Test {
         withTestApplication {
             application.routing {
                 get("/login") {
+                    @Suppress("DEPRECATION_ERROR")
                     oauthHandleCallback(
                         testClient,
                         dispatcher,
@@ -381,6 +382,7 @@ class OAuth2Test {
             assertTrue(result.requestHandled, "request should be handled")
             assertEquals(HttpStatusCode.OK, result.response.status())
             assertTrue { result.response.content!!.startsWith("Ho, ") }
+            @Suppress("DEPRECATION_ERROR")
             assertTrue { result.response.content!!.contains("OAuth2") }
         }
     }
@@ -390,6 +392,7 @@ class OAuth2Test {
         withTestApplication {
             application.routing {
                 get("/login") {
+                    @Suppress("DEPRECATION_ERROR")
                     oauthHandleCallback(
                         testClient,
                         dispatcher,
@@ -413,6 +416,7 @@ class OAuth2Test {
             waitExecutor()
 
             assertTrue(result.requestHandled, "request should be handled")
+            @Suppress("DEPRECATION_ERROR")
             assertEquals(HttpStatusCode.Found, result.response.status())
         }
     }
@@ -422,6 +426,7 @@ class OAuth2Test {
         withTestApplication {
             application.routing {
                 get("/login") {
+                    @Suppress("DEPRECATION_ERROR")
                     oauthHandleCallback(
                         testClient,
                         dispatcher,
@@ -442,11 +447,11 @@ class OAuth2Test {
     }
 
     @Test
+    @Suppress("DEPRECATION_ERROR")
     fun testRequestTokenLowLevelBadContentType() {
         withTestApplication {
             application.routing {
                 get("/login") {
-                    @Suppress("DEPRECATION")
                     oauthHandleCallback(
                         testClient,
                         dispatcher,
@@ -482,7 +487,7 @@ class OAuth2Test {
         withTestApplication {
             application.routing {
                 get("/login") {
-                    @Suppress("DEPRECATION")
+                    @Suppress("DEPRECATION_ERROR")
                     oauthHandleCallback(
                         testClient,
                         dispatcher,
@@ -516,7 +521,7 @@ class OAuth2Test {
         withTestApplication {
             application.routing {
                 get("/login") {
-                    @Suppress("DEPRECATION")
+                    @Suppress("DEPRECATION_ERROR")
                     oauthHandleCallback(
                         testClient,
                         dispatcher,
@@ -609,6 +614,7 @@ class OAuth2Test {
         with(application) {
             routing {
                 get("/login") {
+                    @Suppress("DEPRECATION_ERROR")
                     oauthHandleCallback(
                         testClient,
                         dispatcher,
@@ -639,6 +645,7 @@ class OAuth2Test {
         with(application) {
             routing {
                 get("/login") {
+                    @Suppress("DEPRECATION_ERROR")
                     oauthHandleCallback(
                         testClient,
                         dispatcher,
