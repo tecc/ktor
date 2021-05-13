@@ -6,11 +6,40 @@ import io.ktor.utils.io.bits.*
 import io.ktor.utils.io.core.internal.*
 import io.ktor.utils.io.core.internal.require
 import io.ktor.utils.io.pool.*
+import kotlin.Boolean
+import kotlin.Byte
+import kotlin.ByteArray
+import kotlin.Char
+import kotlin.CharArray
+import kotlin.CharSequence
+import kotlin.Deprecated
+import kotlin.DeprecationLevel
+import kotlin.Double
+import kotlin.Float
+import kotlin.IllegalArgumentException
+import kotlin.IllegalStateException
+import kotlin.Int
+import kotlin.Long
+import kotlin.Nothing
+import kotlin.PublishedApi
+import kotlin.ReplaceWith
+import kotlin.Short
+import kotlin.String
+import kotlin.Suppress
+import kotlin.Throwable
+import kotlin.Unit
+import kotlin.UnsupportedOperationException
+import kotlin.also
 
 /**
  * The default abstract base class implementing [Input] interface.
  * @see [AbstractInput.fill] and [AbstractInput.closeSource].
  */
+@Deprecated(
+    "AbstractInput is deprecated and will be merged with Input in 2.0.0",
+    ReplaceWith("Input"),
+    DeprecationLevel.WARNING
+)
 public abstract class AbstractInput(
     head: ChunkBuffer = ChunkBuffer.Empty,
     remaining: Long = head.remainingAll(),
