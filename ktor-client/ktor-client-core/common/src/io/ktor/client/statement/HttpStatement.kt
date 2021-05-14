@@ -6,6 +6,7 @@ package io.ktor.client.statement
 
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.content.*
 import io.ktor.client.engine.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -29,6 +30,9 @@ public class HttpStatement(
         checkCapabilities()
     }
 
+    @Deprecated("Binary compatibility", level = DeprecationLevel.HIDDEN)
+    public suspend fun <T> execute(block: suspend (response: HttpResponse) -> T): T = execute(null, block)
+
     /**
      * Executes this statement and call the [block] with the streaming [response].
      *
@@ -39,8 +43,14 @@ public class HttpStatement(
      *
      * Please note: the [response] instance will be canceled and shouldn't be passed outside of [block].
      */
-    public suspend fun <T> execute(block: suspend (response: HttpResponse) -> T): T {
-        val response: HttpResponse = executeUnsafe()
+    public suspend fun <T> execute(
+        listener: ProgressListener? = null,
+        block: suspend (response: HttpResponse) -> T
+    ): T {
+        val response: HttpResponse = when (listener) {
+            null -> executeUnsafe()
+            else -> executeUnsafe().observable(listener)
+        }
 
         try {
             return block(response)
@@ -79,13 +89,23 @@ public class HttpStatement(
         }
     }
 
+    @Deprecated("Binary compatibility", level = DeprecationLevel.HIDDEN)
+    public suspend inline fun <reified T, R> receive(crossinline block: suspend (response: T) -> R): R =
+        receive(null, block)
+
     /**
      * Executes this statement and run the [block] with a [HttpClient.responsePipeline] execution result.
      *
      * Note that T can be a streamed type such as [ByteReadChannel].
      */
-    public suspend inline fun <reified T, R> receive(crossinline block: suspend (response: T) -> R): R {
-        val response: HttpResponse = executeUnsafe()
+    public suspend inline fun <reified T, R> receive(
+        noinline listener: ProgressListener? = null,
+        crossinline block: suspend (response: T) -> R
+    ): R {
+        val response: HttpResponse = when (listener) {
+            null -> executeUnsafe()
+            else -> executeUnsafe().observable(listener)
+        }
         try {
             val result = response.receive<T>()
             return block(result)
@@ -100,6 +120,7 @@ public class HttpStatement(
     @PublishedApi
     internal suspend fun executeUnsafe(): HttpResponse {
         val builder = HttpRequestBuilder().takeFromWithExecutionContext(builder)
+
         @Suppress("DEPRECATION_ERROR")
         val call = client.execute(builder)
         return call.response

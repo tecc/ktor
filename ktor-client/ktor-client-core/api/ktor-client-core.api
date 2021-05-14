@@ -916,6 +916,10 @@ public final class io/ktor/client/request/ObservableBody {
 	public final fun getListener ()Lkotlin/jvm/functions/Function2;
 }
 
+public final class io/ktor/client/request/ObservableBodyKt {
+	public static final fun observable (Lio/ktor/client/statement/HttpResponse;Lkotlin/jvm/functions/Function2;)Lio/ktor/client/statement/HttpResponse;
+}
+
 public final class io/ktor/client/request/UtilsKt {
 	public static final fun accept (Lio/ktor/client/request/HttpRequestBuilder;Lio/ktor/http/ContentType;)V
 	public static final fun cookie (Lio/ktor/client/request/HttpRequestBuilder;Ljava/lang/String;Ljava/lang/String;ILio/ktor/util/date/GMTDate;Ljava/lang/String;Ljava/lang/String;ZZLjava/util/Map;)V
@@ -1088,7 +1092,9 @@ public final class io/ktor/client/statement/HttpStatement {
 	public fun <init> (Lio/ktor/client/request/HttpRequestBuilder;Lio/ktor/client/HttpClient;)V
 	public final fun cleanup (Lio/ktor/client/statement/HttpResponse;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun execute (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final synthetic fun execute (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun execute (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun execute$default (Lio/ktor/client/statement/HttpStatement;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public final fun executeUnsafe (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun toString ()Ljava/lang/String;
 }

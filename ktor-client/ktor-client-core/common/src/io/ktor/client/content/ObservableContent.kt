@@ -5,6 +5,7 @@
 package io.ktor.client.content
 
 import io.ktor.client.call.*
+import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.util.*
@@ -12,7 +13,7 @@ import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.*
 
-public typealias ProgressListener = (bytesSendTotal: Long, contentLength: Long) -> Unit
+public typealias ProgressListener = (bytesSentTotal: Long, contentLength: Long) -> Unit
 
 public class ObservableContent(
     private val delegate: OutgoingContent,
@@ -42,21 +43,5 @@ public class ObservableContent(
     override fun <T : Any> getProperty(key: AttributeKey<T>): T? = delegate.getProperty(key)
     override fun <T : Any> setProperty(key: AttributeKey<T>, value: T?): Unit = delegate.setProperty(key, value)
 
-    override fun readFrom(): ByteReadChannel = GlobalScope.writer(callContext, autoFlush = true) {
-        val byteArray = ByteArray(8 * 1024)
-        var bytesSend = 0L
-        val total = contentLength ?: -1
-        while (!content.isClosedForRead) {
-            val read = content.readAvailable(byteArray)
-            channel.writeFully(byteArray, offset = 0, length = read)
-            bytesSend += read
-            listener(bytesSend, total)
-        }
-        val closedCause = content.closedCause
-        if (closedCause != null) {
-            channel.close(closedCause)
-        } else if (bytesSend == 0L) {
-            listener(bytesSend, total)
-        }
-    }.channel
+    override fun readFrom(): ByteReadChannel = content.observable(callContext, contentLength, listener)
 }
