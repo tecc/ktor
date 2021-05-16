@@ -26,7 +26,13 @@ public abstract class BaseApplicationEngine(
     /**
      * Configuration for the [BaseApplicationEngine]
      */
-    public open class Configuration : ApplicationEngine.Configuration()
+    public open class Configuration : ApplicationEngine.Configuration() {
+        /**
+         * Whether or not to send a default fallback response for unhandled requests.
+         * The default response (404 Not Found) is otherwise only used for responses with no status.
+         */
+        public var useDefaultFallbackResponse: Boolean = true
+    }
 
     init {
         BaseApplicationResponse.setupSendPipeline(pipeline.sendPipeline)
@@ -46,7 +52,8 @@ public abstract class BaseApplicationEngine(
 
     private fun Application.installDefaultInterceptors() {
         intercept(ApplicationCallPipeline.Fallback) {
-            if (call.response.status() == null) {
+            val config = application.environment.config as Configuration
+            if (config.useDefaultFallbackResponse && call.response.status() == null) {
                 call.respond(HttpStatusCode.NotFound)
             }
         }
